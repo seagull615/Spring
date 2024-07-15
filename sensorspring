@@ -1,0 +1,94 @@
+# spring-sensor
+import pygame
+import numpy as np
+pygame.init()
+
+# domain # domain # domain # domain # domain # 
+window_size=380
+win = pygame.display.set_mode((window_size,window_size))
+pygame.display.set_caption("spring")
+cp_x=window_size/2 # Center coordinate of X
+cp_y=window_size/2 # Center coordinate of Y
+
+# interface # interface # interface # interface
+G=0 # Color Variable
+WHITE = (25, 255, 255) # Color Variable
+
+myFont = pygame.font.SysFont( "arial", 30, True, False) # Font Design
+text_Title= myFont.render("M", True, WHITE) # Text input
+text_Rect = text_Title.get_rect() # Text base
+text_x=cp_x-10
+text_y=cp_y
+
+text_Rect.centerx = text_x # Text Position
+text_Rect.y =text_y  # Text Position
+
+
+# Parameters # Parameters # Parameters # Parameters
+y=cp_y+5 # Initial Position of the Ball
+dt=0.01 # Time Interver per Sample
+m=0.05 # Mass of the Ball [kg]
+k=16.33 # Hooke's Constant [N/m]
+a=0 # initial Acceleration
+v=0 # intial Velocity
+F=5 # Force exerted [N]
+
+
+# Functions # Functions # Functions # Functions 
+def draw_circle(x,y):
+    pygame.draw.circle(win, (150,150,150), (x,y), 10,0)
+   
+def draw_circle2(x,y):
+    pygame.draw.circle(win, (220,220,220), (x-3,y-3), 4,0)   
+
+def draw_line(x,y,G):
+    
+    pygame.draw.line(win, (255,255-G,255-G), (0,cp_y),(x,y), 1)
+def draw_line2(x,y,G):
+    pygame.draw.line(win, (255,255-G,255-G), (380,cp_y),(x,y), 1)
+
+
+# images # images# images # images # images
+run = True
+while run:
+    
+    pygame.time.delay(50)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_UP]:
+        v -= F/m
+    if keys[pygame.K_DOWN]:
+        v += F/m
+    if keys[pygame.K_RIGHT]:
+        F += 2
+    if keys[pygame.K_LEFT]:
+        F -= 2    
+    if keys[pygame.K_SPACE]:
+        v = v*0.8
+        
+    
+    a=(-k/m)*(y-cp_y)-v*3
+    v=v+a*dt
+    y=y+v*dt
+    
+    win.fill((0))
+    
+    draw_line(cp_x,y,G)
+    draw_line2(cp_x,y,G)
+
+    draw_circle(cp_x,y)
+    draw_circle2(cp_x,y)
+    pygame.draw.rect(win, (255,0,0), (text_x-50,text_y,100,50)) 
+    win.blit(text_Title, text_Rect)
+      
+
+    pygame.display.update()
+    
+
+
+pygame.quit()            
